@@ -26,4 +26,10 @@ RUN chown -R www-data:www-data /var/www/html \
 
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-CMD sed -i "s/80/$PORT/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf && apache2-foreground
+CMD bash -lc 'set -eux; \
+    a2dismod mpm_event || true; \
+    a2dismod mpm_worker || true; \
+    a2dismod mpm_prefork || true; \
+    a2enmod mpm_prefork rewrite; \
+    sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf; \
+    apache2-foreground'
