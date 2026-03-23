@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN a2enmod rewrite
 
+# 🔥 YE LINE ADD KARO
+RUN a2dismod mpm_event mpm_worker && a2enmod mpm_prefork
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
