@@ -36,4 +36,6 @@ CMD bash -lc 'set -eux; \
     a2enmod mpm_prefork rewrite; \
     apache2ctl -M | grep mpm || true; \
     sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf; \
+    php artisan config:clear || true; \
+    php artisan migrate --force || true; \
     apache2-foreground'

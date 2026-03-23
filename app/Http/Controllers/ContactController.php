@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Contact;
+use Illuminate\Database\QueryException;
 
 class ContactController extends Controller
 {
@@ -34,11 +35,17 @@ class ContactController extends Controller
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
+        } catch (QueryException $e) {
+            \Log::error('Contact form DB error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Database is temporarily unavailable. Please try again in a moment.',
+            ], 503);
         } catch (\Exception $e) {
             \Log::error('Contact form error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'System Error: ' . $e->getMessage(),
+                'message' => 'Server error while submitting the form.',
             ], 500);
         }
     }
